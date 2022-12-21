@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && chmod +x target/js/main.js"
   },
   "devDependencies": {
     "@types/node": "^18.11.17",
