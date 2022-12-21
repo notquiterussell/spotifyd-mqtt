@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 import mqtt from "mqtt";
 
 const client = mqtt.connect('mqtt://localhost');
