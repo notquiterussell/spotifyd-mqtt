@@ -90,7 +90,7 @@ const handle = (e: SpotifydEvent): TopicMessage[] => {
 client.on('connect', function () {
     const topicMessages = handle(spotifyEvent);
     topicMessages.forEach(message => {
-        client.publish(message.topic, message.message)
+        client.publish(`raspotify/rpih1/${message.topic}`, message.message)
     })
     client.end();
 });
