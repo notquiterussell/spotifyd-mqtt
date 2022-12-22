@@ -65,7 +65,11 @@ const handle = (e: SpotifydEvent): TopicMessage[] => {
         case EventName.load:
             break;
         case EventName.play:
-            messages.push(blankTopicMessage("play_start"))
+            if (e.trackId == e.oldTrackId) {
+                messages.push(blankTopicMessage("play_resume"))
+            } else {
+                messages.push(blankTopicMessage("play_start"))
+            }
             break;
         case EventName.pause:
             messages.push(blankTopicMessage("play_end"))
@@ -76,6 +80,7 @@ const handle = (e: SpotifydEvent): TopicMessage[] => {
             messages.push(blankTopicMessage("play_end"))
             break;
         case EventName.unavailable:
+            messages.push(topicMessage("title", "Unavailable"))
             messages.push(blankTopicMessage("play_end"))
             break;
         case EventName.preloading:
