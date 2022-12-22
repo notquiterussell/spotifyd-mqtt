@@ -7,42 +7,10 @@ const exhaustive = (event: never): never => {
     throw new Error(`Unknown event ${event}`)
 }
 
-interface SpotifydEvent {
-    event: EventName,
-    trackId?: string,
-    oldTrackId?: string
-}
-
-interface TopicMessage {
-    topic: string,
-    message: string,
-}
-
-enum EventName {
-    change = "change",
-    start = "start",
-    stop = "stop",
-    load = "load",
-    play = "play",
-    pause = "pause",
-    preload = "preload",
-    endoftrack = "endoftrack",
-    unavailable = "unavailable",
-    preloading = "preloading",
-}
-
 const spotifyEvent: SpotifydEvent = {
     event: EventName[(process.env.PLAYER_EVENT || 'stop') as keyof typeof EventName],
     oldTrackId: process.env.OLD_TRACK_ID || "",
     trackId: process.env.TRACK_ID,
-}
-
-const blankTopicMessage = (topic: string): TopicMessage => {
-    return {topic, message: "--"}
-}
-
-const topicMessage = (topic: string, message: string): TopicMessage => {
-    return {topic, message}
 }
 
 const handle = (e: SpotifydEvent): TopicMessage[] => {
@@ -65,7 +33,7 @@ const handle = (e: SpotifydEvent): TopicMessage[] => {
         case EventName.load:
             break;
         case EventName.play:
-            if (e.trackId == e.oldTrackId) {
+            if (e.trackId === e.oldTrackId) {
                 messages.push(blankTopicMessage("play_resume"))
             } else {
                 messages.push(blankTopicMessage("play_start"))
