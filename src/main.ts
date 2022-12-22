@@ -2,6 +2,16 @@
 import mqtt from "mqtt";
 import {EventName, SpotifydEvent, TopicMessage} from "./model";
 import {blankTopicMessage, topicMessage} from "./topicHelpers";
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+if (!process.env.SPOTIFY_CLIENT_ID) {
+    throw "Missing SPOTIFY_CLIENT_ID from environment"
+}
+if (!process.env.SPOTIFY_CLIENT_SECRET) {
+    throw "Missing SPOTIFY_CLIENT_SECRET from environment"
+}
 
 const client = mqtt.connect('mqtt://localhost');
 
