@@ -3,8 +3,9 @@ import mqtt from "mqtt";
 import {EventName, SpotifydEvent, TopicMessage} from "./model";
 import {blankTopicMessage, topicMessage} from "./topicHelpers";
 import dotenv from 'dotenv'
+import path from "path";
 
-dotenv.config()
+dotenv.config({path: path.resolve(__dirname, '.env')})
 
 if (!process.env.SPOTIFY_CLIENT_ID) {
     throw "Missing SPOTIFY_CLIENT_ID from environment"

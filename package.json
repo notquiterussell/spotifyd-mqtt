@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "tsc && webpack && chmod +x target/js/main.js"
+    "build": "tsc && webpack && chmod +x target/js/main.js && cp .env target/js"
   },
   "devDependencies": {
     "@types/node": "^18.11.17",
