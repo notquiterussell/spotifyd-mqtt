@@ -4,6 +4,7 @@ import {EventName, SpotifydEvent, TopicMessage} from "./model";
 import {blankTopicMessage, topicMessage} from "./topicHelpers";
 import dotenv from 'dotenv'
 import path from "path";
+import {SpotifyClient} from "./spotify";
 
 dotenv.config({path: path.resolve(__dirname, '.env')})
 
@@ -19,6 +20,8 @@ const client = mqtt.connect('mqtt://localhost');
 const exhaustive = (event: never): never => {
     throw new Error(`Unknown event ${event}`)
 }
+
+(async () => new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails("7MbepFl6aEaK4ELLVylTqI"))()
 
 const spotifyEvent: SpotifydEvent = {
     event: EventName[(process.env.PLAYER_EVENT || 'stop') as keyof typeof EventName],
