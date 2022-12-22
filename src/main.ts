@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import mqtt from "mqtt";
+import {EventName, SpotifydEvent, TopicMessage} from "./model";
+import {blankTopicMessage, topicMessage} from "./topicHelpers";
 
 const client = mqtt.connect('mqtt://localhost');
 

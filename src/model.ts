@@ -1,15 +1,15 @@
-interface SpotifydEvent {
+export interface SpotifydEvent {
     event: EventName,
     trackId?: string,
     oldTrackId?: string
 }
 
-interface TopicMessage {
+export interface TopicMessage {
     topic: string,
     message: string,
 }
 
-enum EventName {
+export enum EventName {
     change = "change",
     start = "start",
     stop = "stop",

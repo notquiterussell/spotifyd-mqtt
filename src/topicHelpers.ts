@@ -1,7 +1,9 @@
-const blankTopicMessage = (topic: string): TopicMessage => {
+import {TopicMessage} from "./model";
+
+export const blankTopicMessage = (topic: string): TopicMessage => {
     return {topic, message: "--"}
 }
 
-const topicMessage = (topic: string, message: string): TopicMessage => {
+export const topicMessage = (topic: string, message: string): TopicMessage => {
     return {topic, message}
 }
