@@ -92,7 +92,7 @@ const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
 client.on('connect', async () => {
     const topicMessages = await handle(spotifyEvent);
     topicMessages.forEach(message => {
-        client.publish(`raspotify/rpih1/${message.topic}`, message.message)
+        client.publish(`shairport-sync/rpih1/${message.topic}`, message.message)
     })
     client.end();
 });
