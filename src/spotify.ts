@@ -30,7 +30,7 @@ export class SpotifyClient {
 
                 // use the access token to access the Spotify Web API
                 const token = body.access_token;
-                console.log("Token")
+                console.log("Token", token)
                 const options = {
                     url: `https://api.spotify.com/v1/tracks/${trackId}`,
                     headers: {
