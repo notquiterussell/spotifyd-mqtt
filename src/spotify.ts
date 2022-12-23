@@ -13,40 +13,46 @@ export class SpotifyClient {
         console.log("secret", client_secret)
     }
 
-    async getTrackDetails(trackId: string): Promise<TrackObjectFull | undefined> {
-        const authOptions = {
-            url: 'https://accounts.spotify.com/api/token',
-            headers: {
-                'Authorization': 'Basic ' + (Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64')),
-            },
-            form: {
-                grant_type: 'client_credentials',
-            },
-            json: true,
-        };
+    async getTrackDetails(trackId: string): Promise<TrackObjectFull> {
+        return new Promise<TrackObjectFull>((resolve, reject) => {
+            const authOptions = {
+                url: 'https://accounts.spotify.com/api/token',
+                headers: {
+                    'Authorization': 'Basic ' + (Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64')),
+                },
+                form: {
+                    grant_type: 'client_credentials',
+                },
+                json: true,
+            };
 
-        request.post(authOptions, function (error, response, body) {
-            if (!error && response.statusCode === 200) {
+            request.post(authOptions, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
 
-                // use the access token to access the Spotify Web API
-                const token = body.access_token;
-                console.log("Token", token)
-                const options = {
-                    url: `https://api.spotify.com/v1/tracks/${trackId}`,
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                    },
-                    json: true,
-                };
-                request.get(options, function (error, response, body) {
-                    return body
-                });
-            } else {
-                console.log("error", error)
-                console.log("response.statusCode", response.statusCode)
-                console.log("Body", response.body)
-            }
-        });
-        return undefined
+                    // use the access token to access the Spotify Web API
+                    const token = body.access_token;
+                    console.log("Token", token)
+
+                    const options = {
+                        url: `https://api.spotify.com/v1/tracks/${trackId}`,
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                        },
+                        json: true,
+                    };
+                    request.get(options, function (error, response, body) {
+                        if (!error) {
+                            resolve(body)
+                        } else {
+                            console.log("error", error)
+                            reject(error)
+                        }
+                    });
+                } else {
+                    console.log("error", error)
+                    reject(error)
+                }
+            });
+        })
     }
 }
