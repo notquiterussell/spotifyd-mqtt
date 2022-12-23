@@ -56,7 +56,7 @@ const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
                 const track = await new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails(e.trackId)
                 if (track) {
                     messages.push(topicMessage("title", track.name))
-                    messages.push(topicMessage("artist", track.artists.join(", ")))
+                    messages.push(topicMessage("artist", track.artists.map(a => a.name).join(", ")))
                     messages.push(topicMessage("album", track.album.name))
                 }
             }
