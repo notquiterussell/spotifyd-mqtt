@@ -23,6 +23,8 @@ const exhaustive = (event: never): never => {
 
 (async () => new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails("7MbepFl6aEaK4ELLVylTqI"))()
 
+console.log("Event string", process.env.PLAYER_EVENT)
+
 const spotifyEvent: SpotifydEvent = {
     event: EventName[(process.env.PLAYER_EVENT || 'stop') as keyof typeof EventName],
     oldTrackId: process.env.OLD_TRACK_ID || "",
