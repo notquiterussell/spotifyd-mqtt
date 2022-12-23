@@ -20,4 +20,5 @@ export enum EventName {
     endoftrack = "endoftrack",
     unavailable = "unavailable",
     preloading = "preloading",
+    volumeset = "volumeset",
 }

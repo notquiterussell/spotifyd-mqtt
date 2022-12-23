@@ -1,4 +1,6 @@
 import request from "request";
+import TrackObjectFull = SpotifyApi.TrackObjectFull;
+
 
 export class SpotifyClient {
     clientId: string;
@@ -11,7 +13,7 @@ export class SpotifyClient {
         console.log("secret", client_secret)
     }
 
-    async getTrackDetails(trackId: string) {
+    async getTrackDetails(trackId: string): Promise<TrackObjectFull | undefined> {
         const authOptions = {
             url: 'https://accounts.spotify.com/api/token',
             headers: {
@@ -37,7 +39,7 @@ export class SpotifyClient {
                     json: true,
                 };
                 request.get(options, function (error, response, body) {
-                    console.log(body);
+                    return body
                 });
             } else {
                 console.log("error", error)
@@ -45,5 +47,6 @@ export class SpotifyClient {
                 console.log("Body", response.body)
             }
         });
+        return undefined
     }
 }

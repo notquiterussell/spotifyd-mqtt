@@ -21,15 +21,13 @@ const exhaustive = (_: never): never => {
     throw new Error(`Unknown event ${process.env.PLAYER_EVENT}`)
 }
 
-(async () => new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails("7MbepFl6aEaK4ELLVylTqI"))()
-
 const spotifyEvent: SpotifydEvent = {
     event: EventName[(process.env.PLAYER_EVENT || 'stop') as keyof typeof EventName],
     oldTrackId: process.env.OLD_TRACK_ID || "",
     trackId: process.env.TRACK_ID,
 }
 
-const handle = (e: SpotifydEvent): TopicMessage[] => {
+const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
     const messages: TopicMessage[] = []
 
     if (e.trackId) {
@@ -49,6 +47,14 @@ const handle = (e: SpotifydEvent): TopicMessage[] => {
         case EventName.load:
             break;
         case EventName.play:
+            if (e.trackId) {
+                const track = await new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails(e.trackId)
+                if (track) {
+                    messages.push(topicMessage("title", track.name))
+                    messages.push(topicMessage("artist", track.artists.join(", ")))
+                    messages.push(topicMessage("album", track.album.name))
+                }
+            }
             if (e.trackId === e.oldTrackId) {
                 messages.push(blankTopicMessage("play_resume"))
             } else {
@@ -69,6 +75,8 @@ const handle = (e: SpotifydEvent): TopicMessage[] => {
             break;
         case EventName.preloading:
             break;
+        case EventName.volumeset:
+            break;
         default:
             exhaustive(e.event)
     }
@@ -76,8 +84,8 @@ const handle = (e: SpotifydEvent): TopicMessage[] => {
     return messages
 }
 
-client.on('connect', function () {
-    const topicMessages = handle(spotifyEvent);
+client.on('connect', async () => {
+    const topicMessages = await handle(spotifyEvent);
     topicMessages.forEach(message => {
         client.publish(`raspotify/rpih1/${message.topic}`, message.message)
     })
