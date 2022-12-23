@@ -17,13 +17,11 @@ if (!process.env.SPOTIFY_CLIENT_SECRET) {
 
 const client = mqtt.connect('mqtt://localhost');
 
-const exhaustive = (event: never): never => {
-    throw new Error(`Unknown event ${event}`)
+const exhaustive = (_: never): never => {
+    throw new Error(`Unknown event ${process.env.PLAYER_EVENT}`)
 }
 
 (async () => new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails("7MbepFl6aEaK4ELLVylTqI"))()
-
-console.log("Event string", process.env.PLAYER_EVENT)
 
 const spotifyEvent: SpotifydEvent = {
     event: EventName[(process.env.PLAYER_EVENT || 'stop') as keyof typeof EventName],
