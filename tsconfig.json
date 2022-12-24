@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2020",
     /* Modules */
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "outDir": "./target/unbundled/",
-    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./target/js/",
     "forceConsistentCasingInFileNames": true,
-    /* Type Checking */
     "strict": true,
-    /* Completeness */
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // Needed for CommonJS modules
+    "allowSyntheticDefaultImports": true,
+    "declaration": true
   }
 }

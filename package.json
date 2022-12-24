@@ -1,6 +1,7 @@
 {
+  "type": "module",
   "scripts": {
-    "build": "tsc && webpack && chmod +x target/js/main.js && cp .env target/js"
+    "build": "rm -r target && tsc && chmod +x target/js/main.js && cp .env target/js"
   },
   "devDependencies": {
     "@types/node": "^18.11.17",
@@ -10,13 +11,13 @@
     "ts-node": "^10.9.1",
     "tslint": "^6.1.3",
     "typescript": "^4.9.4",
-    "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-node-externals": "^3.0.0",
     "webpack-shebang-plugin": "^1.1.8"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "got": "^12.5.3",
     "mqtt": "^4.3.7",
     "request": "^2.88.2"
   }
