@@ -10,6 +10,7 @@
     "skipLibCheck": true,
     // Needed for CommonJS modules
     "allowSyntheticDefaultImports": true,
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true
   }
 }

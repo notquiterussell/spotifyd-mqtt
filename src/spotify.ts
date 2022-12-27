@@ -1,5 +1,13 @@
-import request from "request";
+import got from "got";
+import {FileSystemCache} from "file-system-cache";
 import TrackObjectFull = SpotifyApi.TrackObjectFull;
+
+interface AccessToken {
+    access_token: string,
+    token_type: string,
+    expires_in: number,
+    expires_at: number, // UTC ms
+}
 
 
 export class SpotifyClient {
@@ -9,50 +17,42 @@ export class SpotifyClient {
     public constructor(client_id: string, client_secret: string) {
         this.clientId = client_id;
         this.clientSecret = client_secret
-        console.log("id", client_id)
-        console.log("secret", client_secret)
     }
 
     async getTrackDetails(trackId: string): Promise<TrackObjectFull> {
-        return new Promise<TrackObjectFull>((resolve, reject) => {
-            const authOptions = {
-                url: 'https://accounts.spotify.com/api/token',
+        try {
+            const at = await this.getSpotifyKey()
+            return got.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
                 headers: {
-                    'Authorization': 'Basic ' + (Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64')),
+                    'Authorization': `${at?.token_type} ${at?.access_token}`,
                 },
-                form: {
-                    grant_type: 'client_credentials',
-                },
-                json: true,
-            };
+            }).json()
+        } catch (e: any) {
+            console.log("Error", e.request.body)
+            throw e
+        }
+    }
 
-            request.post(authOptions, function (error, response, body) {
-                if (!error && response.statusCode === 200) {
+    private async getSpotifyKey(): Promise<AccessToken> {
+        const cache = new FileSystemCache()
+        const now = new Date()
+        const cachedKey = cache.getSync("spotify_key") as AccessToken
+        if (cachedKey && now.valueOf() < cachedKey.expires_at) {
+            return cachedKey
+        }
 
-                    // use the access token to access the Spotify Web API
-                    const token = body.access_token;
-                    console.log("Token", token)
-
-                    const options = {
-                        url: `https://api.spotify.com/v1/tracks/${trackId}`,
-                        headers: {
-                            'Authorization': 'Bearer ' + token,
-                        },
-                        json: true,
-                    };
-                    request.get(options, function (error, response, body) {
-                        if (!error) {
-                            resolve(body)
-                        } else {
-                            console.log("error", error)
-                            reject(error)
-                        }
-                    });
-                } else {
-                    console.log("error", error)
-                    reject(error)
-                }
-            });
-        })
+        const at: AccessToken = await got.post('https://accounts.spotify.com/api/token', {
+            headers: {
+                'Authorization': 'Basic ' + (Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64')),
+            },
+            form: {
+                grant_type: 'client_credentials',
+            },
+        }).json<AccessToken>();
+        now.setSeconds(now.getSeconds() + at.expires_in - 100)
+        at.expires_at = now.valueOf()
+        await cache.set("spotify_key", at)
+        return at
     }
 }
+
