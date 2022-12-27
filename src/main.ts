@@ -44,12 +44,10 @@ const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
             messages.push(blankTopicMessage("play_end"))
             break;
         case EventName.load:
-            break;
+        // Deliberate fall through
         case EventName.change:
-            messages.push(blankTopicMessage("play_start"))
         // Deliberate fall through
         case EventName.start:
-            messages.push(blankTopicMessage("play_start"))
         // Deliberate fall through
         case EventName.play:
             if (e.trackId) {
