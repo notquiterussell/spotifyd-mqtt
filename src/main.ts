@@ -23,8 +23,8 @@ const exhaustive = (_: never): never => {
     throw new Error(`Unknown event ${process.env.PLAYER_EVENT}`)
 }
 
-const result = await new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || "", process.env.SPOTIFY_CLIENT_SECRET || "").getTrackDetails("07GvNcU1WdyZJq3XxP0kZa")
-console.log(result)
+// const result = await new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || "", process.env.SPOTIFY_CLIENT_SECRET || "").getTrackDetails("07GvNcU1WdyZJq3XxP0kZa")
+// console.log(result)
 
 const spotifyEvent: SpotifydEvent = {
     event: EventName[(process.env.PLAYER_EVENT || 'stop') as keyof typeof EventName],
