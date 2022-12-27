@@ -40,17 +40,17 @@ const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
     }
 
     switch (e.event) {
-        case EventName.change:
-            messages.push(blankTopicMessage("play_start"))
-            break;
-        case EventName.start:
-            messages.push(blankTopicMessage("play_start"))
-            break;
         case EventName.stop:
             messages.push(blankTopicMessage("play_end"))
             break;
         case EventName.load:
             break;
+        case EventName.change:
+            messages.push(blankTopicMessage("play_start"))
+        // Deliberate fall through
+        case EventName.start:
+            messages.push(blankTopicMessage("play_start"))
+        // Deliberate fall through
         case EventName.play:
             if (e.trackId) {
                 const track = await new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails(e.trackId)
