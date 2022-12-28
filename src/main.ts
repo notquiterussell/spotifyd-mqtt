@@ -19,13 +19,13 @@ if (!process.env.SPOTIFY_CLIENT_SECRET) {
 
 let trackId: string = ''
 const client = mqtt.connect('mqtt://hifi-office.local');
-client.subscribe("shairport-sync/rpih1/track_id", {qos: 0, rh: 1})
-client.on('message', (topic, message) => {
-    if (topic.endsWith("track_id")) {
-        trackId = message.toString('utf-8')
-        console.log(trackId)
-    }
-})
+// client.subscribe("shairport-sync/rpih1/track_id", {qos: 0, rh: 1})
+// client.on('message', (topic, message) => {
+//     if (topic.endsWith("track_id")) {
+//         trackId = message.toString('utf-8')
+//         console.log(trackId)
+//     }
+// })
 
 const exhaustive = (_: never): never => {
     throw new Error(`Unknown event ${process.env.PLAYER_EVENT}`)
