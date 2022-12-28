@@ -17,7 +17,15 @@ if (!process.env.SPOTIFY_CLIENT_SECRET) {
     throw "Missing SPOTIFY_CLIENT_SECRET from environment"
 }
 
-const client = mqtt.connect('mqtt://localhost');
+let trackId: string = ''
+const client = mqtt.connect('mqtt://hifi-office.local');
+client.subscribe("shairport-sync/rpih1/track_id", {qos: 0, rh: 1})
+client.on('message', (topic, message) => {
+    if (topic.endsWith("track_id")) {
+        trackId = message.toString('utf-8')
+        console.log(trackId)
+    }
+})
 
 const exhaustive = (_: never): never => {
     throw new Error(`Unknown event ${process.env.PLAYER_EVENT}`)
@@ -35,10 +43,6 @@ const spotifyEvent: SpotifydEvent = {
 const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
     const messages: TopicMessage[] = []
 
-    if (e.trackId) {
-        messages.push(topicMessage("track_id", e.trackId))
-    }
-
     switch (e.event) {
         case EventName.stop:
             messages.push(blankTopicMessage("play_end"))
@@ -49,25 +53,29 @@ const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
         // Deliberate fall through
         case EventName.start:
         // Deliberate fall through
+        case EventName.preload:
+        // Deliberate fall through
+        case EventName.preloading:
+        // Deliberate fall through
         case EventName.play:
             if (e.trackId) {
-                const track = await new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails(e.trackId)
-                if (track) {
-                    messages.push(topicMessage("title", track.name))
-                    messages.push(topicMessage("artist", track.artists.map(a => a.name).join(", ")))
-                    messages.push(topicMessage("album", track.album.name))
+                if (e.trackId === trackId) {
+                    messages.push(blankTopicMessage("play_resume"))
+                } else {
+                    messages.push(topicMessage("track_id", e.trackId))
+
+                    const track = await new SpotifyClient(process.env.SPOTIFY_CLIENT_ID || '', process.env.SPOTIFY_CLIENT_SECRET || '').getTrackDetails(e.trackId)
+                    if (track) {
+                        messages.push(topicMessage("title", track.name))
+                        messages.push(topicMessage("artist", track.artists.map(a => a.name).join(", ")))
+                        messages.push(topicMessage("album", track.album.name))
+                    }
+                    messages.push(blankTopicMessage("play_start"))
                 }
-            }
-            if (e.trackId === e.oldTrackId) {
-                messages.push(blankTopicMessage("play_resume"))
-            } else {
-                messages.push(blankTopicMessage("play_start"))
             }
             break;
         case EventName.pause:
             messages.push(blankTopicMessage("play_end"))
-            break;
-        case EventName.preload:
             break;
         case EventName.endoftrack:
             messages.push(blankTopicMessage("play_end"))
@@ -75,8 +83,6 @@ const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
         case EventName.unavailable:
             messages.push(topicMessage("title", "Unavailable"))
             messages.push(blankTopicMessage("play_end"))
-            break;
-        case EventName.preloading:
             break;
         case EventName.volumeset:
             break;
@@ -90,7 +96,7 @@ const handle = async (e: SpotifydEvent): Promise<TopicMessage[]> => {
 client.on('connect', async () => {
     const topicMessages = await handle(spotifyEvent);
     topicMessages.forEach(message => {
-        client.publish(`shairport-sync/rpih1/${message.topic}`, message.message)
+        client.publish(`shairport-sync/rpih1/${message.topic}`, message.message, {retain: true})
     })
     client.end();
 });
