@@ -21,3 +21,8 @@ install: ## Install the systemd daemon
 	ln -sf $(shell pwd)/spotifyd-mqtt.service ~/.config/systemd/user/
 	systemctl edit --user spotifyd-mqtt.service
 
+start: ## Start the service for the first time
+	systemctl --user enable spotifyd-mqtt.service
+
+restart: ## Restart the service
+	systemctl --user restart spotifyd-mqtt.service
