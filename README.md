@@ -36,6 +36,6 @@ To register with Spotify, login and visit: https://developer.spotify.com
 
 ## Building
 
-`make && make install`
+`make setup && make build && sudo make install`
 
 ## Installing

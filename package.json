@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "build": "rm -r target && tsc && chmod +x target/js/index.js && cp .env target/js"
+    "build": "rm -r target && tsc && chmod +x target/js/index.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.15",

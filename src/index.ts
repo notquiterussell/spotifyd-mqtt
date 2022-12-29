@@ -1,15 +1,8 @@
-#!/usr/bin/env node
-import dotenv from "dotenv";
-import path from "path";
-import url from "url";
 import {httpServer} from "./http/index.js";
 import {SpotifyClient} from "./spotify/index.js";
 import NodeCache from "node-cache";
 import {MqttClient} from "./mqtt/index.js";
 import gracefulShutdown from "http-graceful-shutdown";
-// tslint:disable-next-line:variable-name
-const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
-dotenv.config({path: path.resolve(__dirname, ".env")});
 
 if (!process.env.SPOTIFY_CLIENT_ID) {
     throw new Error("Missing SPOTIFY_CLIENT_ID from environment");
