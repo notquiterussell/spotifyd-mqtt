@@ -16,5 +16,7 @@ setup: ## Set up the environment
 build: ## Build the application as a binary
 	npm run build
 
-
+instal: ## Install the systemd daemon
+	mkdir -p ~/.config/systemd/user
+	ln -s spotify-mqtt.service ~/.config/systemd/user/
 
