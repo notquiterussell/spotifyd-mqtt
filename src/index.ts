@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import {httpServer} from "./http/index.js";
 import {SpotifyClient} from "./spotify/index.js";
 import NodeCache from "node-cache";
