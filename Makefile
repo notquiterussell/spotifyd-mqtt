@@ -18,6 +18,6 @@ build: ## Build the application as a binary
 
 install: ## Install the systemd daemon
 	mkdir -p ~/.config/systemd/user
-	ln -s $(pwd)/spotifyd-mqtt.service ~/.config/systemd/user/
+	ln -sf $(pwd)/spotifyd-mqtt.service ~/.config/systemd/user/
 	systemctl edit --user spotifyd-mqtt.service
 
