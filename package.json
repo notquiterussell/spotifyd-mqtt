@@ -1,9 +1,10 @@
 {
   "type": "module",
   "scripts": {
-    "build": "rm -r target && tsc && chmod +x target/js/main.js && cp .env target/js"
+    "build": "rm -r target && tsc && chmod +x target/js/index.js && cp .env target/js"
   },
   "devDependencies": {
+    "@types/express": "^4.17.15",
     "@types/node": "^18.11.17",
     "@types/node-fetch": "^2.6.2",
     "@types/request": "^2.48.8",
@@ -17,8 +18,11 @@
   },
   "dependencies": {
     "dotenv": "^16.0.3",
-    "file-system-cache": "^2.0.1",
+    "express": "^4.18.2",
     "got": "^12.5.3",
-    "mqtt": "^4.3.7"
+    "http-graceful-shutdown": "^3.1.12",
+    "http-status-codes": "^2.2.0",
+    "mqtt": "^4.3.7",
+    "node-cache": "^5.1.2"
   }
 }

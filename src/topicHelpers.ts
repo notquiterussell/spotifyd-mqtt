@@ -1,4 +1,4 @@
-import {TopicMessage} from "./model.js";
+import {TopicMessage} from "./model/index.js";
 
 export const blankTopicMessage = (topic: string): TopicMessage => {
     return {topic, message: "--"}
