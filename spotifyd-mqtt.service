@@ -7,7 +7,6 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-User=pi
 ExecStart=/home/pi/spotifyd-mqtt/target/js/index.js
 Environment="PORT=9001"
 Environment="SPOTIFY_CLIENT_ID=<secret>"
