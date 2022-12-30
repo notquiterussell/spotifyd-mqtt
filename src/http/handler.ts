@@ -38,6 +38,8 @@ export const handle = async (
                         messages.push(blankTopicMessage("play_start"));
                     }
                 }
+            } else {
+                console.log("No track id passed");
             }
             break;
         case EventName.pause:

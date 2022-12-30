@@ -48,15 +48,22 @@ export class SpotifyClient {
         }
 
         const usernamePassword = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString("base64");
-        const {body: token} = await got.post<AccessToken>("https://accounts.spotify.com/api/token", {
-            headers: {
-                "Authorization": `Basic ${usernamePassword}`,
-            },
-            form: {
-                grant_type: "client_credentials",
-            },
-            responseType: "json",
-        });
+        let token;
+        try {
+            const {body} = await got.post<AccessToken>("https://accounts.spotify.com/api/token", {
+                headers: {
+                    "Authorization": `Basic ${usernamePassword}`,
+                },
+                form: {
+                    grant_type: "client_credentials",
+                },
+                responseType: "json",
+            });
+            token = body;
+        } catch (e: any) {
+            console.log(`Error getting token with ${this.clientId}`, e.message);
+            throw e;
+        }
         now.setSeconds(now.getSeconds() + token.expires_in - 100);
         token.expires_at = now.valueOf();
         this.cache.set("spotify_key", token);
