@@ -7,7 +7,6 @@ interface AccessToken {
     access_token: string;
     token_type: string;
     expires_in: number;
-    expires_at: number; // UTC ms
 }
 
 
@@ -41,9 +40,8 @@ export class SpotifyClient {
     }
 
     private async getSpotifyKey(): Promise<AccessToken> {
-        const now = new Date();
         const cachedKey = this.cache.get<AccessToken>("spotify_key");
-        if (cachedKey && now.valueOf() < cachedKey.expires_at) {
+        if (cachedKey) {
             return cachedKey;
         }
 
@@ -64,9 +62,8 @@ export class SpotifyClient {
             console.log(`Error getting token with ${this.clientId}`, e.message);
             throw e;
         }
-        now.setSeconds(now.getSeconds() + token.expires_in - 100);
-        token.expires_at = now.valueOf();
-        this.cache.set("spotify_key", token);
+        const expiresIn = token.expires_in - 100; // Give the token a bit of grace
+        this.cache.set("spotify_key", token, expiresIn);
         return token;
     }
 }

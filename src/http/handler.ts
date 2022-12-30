@@ -1,5 +1,5 @@
 import {EventName, SpotifydEvent, TopicMessage} from "../model/index.js";
-import {blankTopicMessage, topicMessage} from "../topicHelpers.js";
+import {blankTopicMessage, topicMessage} from "./topicHelpers.js";
 import {SpotifyClient} from "../spotify/index.js";
 import {CurrentTrack} from "../mqtt/index.js";
 

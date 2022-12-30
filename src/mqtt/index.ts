@@ -24,7 +24,7 @@ export class MqttClient implements CurrentTrack {
                 if (err) {
                     console.log(`Error subscribing ${err}`);
                 } else {
-                    console.log(`Subscribed to ${granted.map(g => g.topic)}`);
+                    console.log(`Subscribed to ${granted.map(g => `${hostname}/${g.topic}`)}`);
                 }
             });
         });
@@ -37,6 +37,13 @@ export class MqttClient implements CurrentTrack {
     }
 
     async close(): Promise<void> {
-        this.client.end();
+        return new Promise((resolve, reject) => {
+            this.client.end(false, {}, (err) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve;
+            });
+        });
     }
 }
