@@ -6,6 +6,7 @@ import * as core from "express-serve-static-core";
 import {handle} from "./handler.js";
 import {MqttClient} from "../mqtt/index.js";
 import HttpStatus from "http-status-codes";
+import getLogger from "../logger/index.js";
 
 type SpotifydQueryParams = {
     trackId?: string;
@@ -14,6 +15,7 @@ type SpotifydQueryParams = {
 
 export const httpServer = (port: number, spotifyClient: SpotifyClient, mqtt: MqttClient): http.Server => {
     const app = express();
+    const logger = getLogger("HTTP Server");
 
     app.get("/:event", async (req: express.Request<core.ParamsDictionary, {}, {}, SpotifydQueryParams>, res) => {
         const event = req.params.event;
@@ -33,6 +35,6 @@ export const httpServer = (port: number, spotifyClient: SpotifyClient, mqtt: Mqt
     });
 
     return app.listen(port, () => {
-        console.log(`Listening on ${port}`);
+        logger.info(`Listening on ${port}`);
     });
 };

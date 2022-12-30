@@ -1,7 +1,8 @@
 import got from "got";
 import {DataCache} from "../cache/index.js";
+import {Logger} from "winston";
+import getLogger from "../logger/index.js";
 import TrackObjectFull = SpotifyApi.TrackObjectFull;
-
 
 interface AccessToken {
     access_token: string;
@@ -9,16 +10,17 @@ interface AccessToken {
     expires_in: number;
 }
 
-
 export class SpotifyClient {
-    private cache: DataCache;
-    clientId: string;
-    clientSecret: string;
+    private readonly cache: DataCache;
+    private readonly clientId: string;
+    private readonly clientSecret: string;
+    private readonly logger: Logger;
 
     public constructor(cache: DataCache, clientId: string, clientSecret: string) {
         this.cache = cache;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.logger = getLogger("SpotifyClient");
     }
 
     async getTrackDetails(trackId: string): Promise<TrackObjectFull | undefined> {
@@ -35,7 +37,7 @@ export class SpotifyClient {
 
             return body;
         } catch (e: any) {
-            console.log("Error", e.message);
+            this.logger.error(`Error ${e.message}`);
         }
     }
 
@@ -59,7 +61,7 @@ export class SpotifyClient {
             });
             token = body;
         } catch (e: any) {
-            console.log(`Error getting token with ${this.clientId}`, e.message);
+            this.logger.error(`Error getting token with ${this.clientId}`, e.message);
             throw e;
         }
         const expiresIn = token.expires_in - 100; // Give the token a bit of grace

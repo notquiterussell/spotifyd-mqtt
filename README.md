@@ -33,6 +33,7 @@ To register with Spotify, login and visit: https://developer.spotify.com
 | PORT                  | The port to listen on                          | 9001                     |
 | MQTT_BROKER           | Broker address                                 | mqtt://hifi-office.local |
 | BASE_MQTT_PATH        | Base path                                      | shairport-sync/rpih1/    |
+| LOG_LEVEL             | Log level                                      | INFO                     |
 
 ## Building
 
