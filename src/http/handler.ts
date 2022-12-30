@@ -40,7 +40,20 @@ export const handle = async (
                         messages.push(topicMessage("artist", track.artists.map(a => a.name).join(", ")));
                         messages.push(topicMessage("album", track.album.name));
                         messages.push(blankTopicMessage("play_start"));
-                        logger.info(`Playing ${e.trackId}`);
+                        logger.info(`Playing track ${e.trackId}`);
+                    } else {
+                        // Episode then
+                        const episode = await spotifyClient.getEpisodeDetails(e.trackId);
+                        if (episode) {
+                            messages.push(topicMessage("track_id", e.trackId));
+                            messages.push(topicMessage("title", episode.name));
+                            messages.push(topicMessage("artist", episode.show.name));
+                            messages.push(topicMessage("album", "-"));
+                            messages.push(blankTopicMessage("play_start"));
+                            logger.info(`Playing episode ${e.trackId}`);
+                        } else {
+                            logger.warn(`No track or episode found for id ${e.trackId}`);
+                        }
                     }
                 }
             } else {

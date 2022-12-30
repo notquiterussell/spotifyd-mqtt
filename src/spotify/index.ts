@@ -3,6 +3,7 @@ import {DataCache} from "../cache/index.js";
 import {Logger} from "winston";
 import getLogger from "../logger/index.js";
 import TrackObjectFull = SpotifyApi.TrackObjectFull;
+import EpisodeObjectFull = SpotifyApi.EpisodeObjectFull;
 
 interface AccessToken {
     access_token: string;
@@ -31,13 +32,42 @@ export class SpotifyClient {
                     "Authorization": `${at?.token_type} ${at?.access_token}`,
                 },
                 responseType: "json",
+            }).catch(async reason => {
+                if (reason.response?.body?.error?.status === 404) {
+                    this.logger.debug(`ID not found ${trackId}`);
+                } else {
+                    this.logger.error(`${reason.message} with reason ${reason.response?.body?.error?.message}`);
+                }
+                return {body: undefined};
             });
-
-            // Handle 404 - probably means we need to call the episode api instead
 
             return body;
         } catch (e: any) {
-            this.logger.error(`Error ${e.message}`);
+            this.logger.error(`Error ${e.message} with reason ${e.response?.body?.error?.message}`);
+        }
+    }
+
+    async getEpisodeDetails(trackId: string): Promise<EpisodeObjectFull | undefined> {
+        try {
+            const at = await this.getSpotifyKey();
+            const {body} =
+                await got.get<EpisodeObjectFull>(`https://api.spotify.com/v1/episodes/${trackId}?market=GB`, {
+                    headers: {
+                        "Authorization": `${at?.token_type} ${at?.access_token}`,
+                    },
+                    responseType: "json",
+                }).catch(async reason => {
+                    if (reason.response?.body?.error?.status === 404) {
+                        this.logger.debug(`ID not found ${trackId}`);
+                    } else {
+                        this.logger.error(`${reason.message} with reason ${reason.response?.body?.error?.message}`);
+                    }
+                    return {body: undefined};
+                });
+
+            return body;
+        } catch (e: any) {
+            this.logger.error(`Error ${e.message} with reason ${e.response?.body?.error?.message}`);
         }
     }
 
