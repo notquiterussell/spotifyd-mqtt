@@ -30,12 +30,27 @@ To register with Spotify, login and visit: https://developer.spotify.com
 |-----------------------|------------------------------------------------|--------------------------|
 | SPOTIFY_CLIENT_ID     | Your Spotify application ID                    | -                        |
 | SPOTIFY_CLIENT_SECRET | Your client secret, from the Spotify dashboard | -                        |
-| PORT                  | The port to listen on                          | -                        |
+| PORT                  | The port to listen on                          | 9001                     |
 | MQTT_BROKER           | Broker address                                 | mqtt://hifi-office.local |
 | BASE_MQTT_PATH        | Base path                                      | shairport-sync/rpih1/    |
 
 ## Building
 
-`make setup && make build && sudo make install`
+`make setup && make build`
 
 ## Installing
+
+The service is designed to run as a user, not root. Note the _deliberate_ lack of `sudo` here.
+
+`make install`
+
+When your default editor opens, provide values for your Spotify client id and secret. You may also override the default
+port, broker address and path.
+
+For example:
+
+```unit file (systemd)
+[Service]
+Environment=SPOTIFY_CLIENT_ID=redacted_id
+Environment=SPOTIFY_CLIENT_SECRET=redacted_secret
+```
