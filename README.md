@@ -54,3 +54,7 @@ For example:
 Environment=SPOTIFY_CLIENT_ID=redacted_id
 Environment=SPOTIFY_CLIENT_SECRET=redacted_secret
 ```
+
+Then run `make start`
+
+Subsequently, run `make restart` on update.

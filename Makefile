@@ -26,3 +26,6 @@ start: ## Start the service for the first time
 
 restart: ## Restart the service
 	systemctl --user restart spotifyd-mqtt.service
+
+dev: ## Run the service locally using a dotenv file
+	npm run dev

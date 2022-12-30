@@ -17,10 +17,17 @@ export class MqttClient implements CurrentTrack {
         this.client.on("message", (topic, message) => {
             if (topic.endsWith("track_id")) {
                 this.currentTrackId = message.toString("utf-8");
-                console.log(`Current track id is ${this.currentTrackId}`);
             }
         });
-        this.client.subscribe(`${baseTopic}/#`, {qos: 0, rh: 1});
+        this.client.on("connect", () => {
+            this.client.subscribe(`${baseTopic}track_id`, {qos: 0, rh: 1}, (err, granted) => {
+                if (err) {
+                    console.log(`Error subscribing ${err}`);
+                } else {
+                    console.log(`Subscribed to ${granted.map(g => g.topic)}`);
+                }
+            });
+        });
     }
 
     async publish(topicMessages: TopicMessage[]): Promise<void> {
