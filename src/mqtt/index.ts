@@ -12,14 +12,15 @@ export class MqttClient implements CurrentTrack {
 
     constructor(hostname: string, baseTopic: string) {
         this.client = mqtt.connect(hostname);
-        this.client.subscribe(`${baseTopic}/track_id`, {qos: 0, rh: 1});
         this.baseTopic = baseTopic;
 
         this.client.on("message", (topic, message) => {
             if (topic.endsWith("track_id")) {
                 this.currentTrackId = message.toString("utf-8");
+                console.log(`Current track id is ${this.currentTrackId}`);
             }
         });
+        this.client.subscribe(`${baseTopic}/#`, {qos: 0, rh: 1});
     }
 
     async publish(topicMessages: TopicMessage[]): Promise<void> {
