@@ -46,9 +46,9 @@ export const handle = async (
                         const episode = await spotifyClient.getEpisodeDetails(e.trackId);
                         if (episode) {
                             messages.push(topicMessage("track_id", e.trackId));
-                            messages.push(topicMessage("title", episode.show.name));
+                            messages.push(topicMessage("title", episode.name));
                             messages.push(topicMessage("artist", episode.show.publisher));
-                            messages.push(topicMessage("album", episode.name));
+                            messages.push(topicMessage("album", episode.show.name));
                             messages.push(blankTopicMessage("play_start"));
                             logger.info(`Playing episode ${e.trackId}`);
                         } else {
