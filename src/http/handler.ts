@@ -39,6 +39,13 @@ export const handle = async (
                         messages.push(topicMessage("title", track.name));
                         messages.push(topicMessage("artist", track.artists.map(a => a.name).join(", ")));
                         messages.push(topicMessage("album", track.album.name));
+
+                        const coverArt = track.album.images.find(i => i.width === 300);
+                        if (coverArt) {
+                            const image = await spotifyClient.getImage(coverArt.url);
+                            messages.push(topicMessage("cover", image));
+                        }
+
                         messages.push(blankTopicMessage("play_start"));
                         logger.info(`Playing track ${e.trackId}`);
                     } else {
@@ -49,6 +56,13 @@ export const handle = async (
                             messages.push(topicMessage("title", episode.name));
                             messages.push(topicMessage("artist", episode.show.publisher));
                             messages.push(topicMessage("album", episode.show.name));
+
+                            const coverArt = episode.images.find(i => i.width === 300);
+                            if (coverArt) {
+                                const image = await spotifyClient.getImage(coverArt.url);
+                                messages.push(topicMessage("cover", image));
+                            }
+
                             messages.push(blankTopicMessage("play_start"));
                             logger.info(`Playing episode ${e.trackId}`);
                         } else {

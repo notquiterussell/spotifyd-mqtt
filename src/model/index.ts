@@ -1,12 +1,12 @@
 export interface SpotifydEvent {
-    event: EventName,
-    trackId?: string,
-    oldTrackId?: string
+    event: EventName;
+    trackId?: string;
+    oldTrackId?: string;
 }
 
 export interface TopicMessage {
-    topic: string,
-    message: string,
+    topic: string;
+    message: string | Buffer;
 }
 
 export enum EventName {

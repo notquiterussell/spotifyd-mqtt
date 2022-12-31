@@ -2,6 +2,7 @@ import got from "got";
 import {DataCache} from "../cache/index.js";
 import {Logger} from "winston";
 import getLogger from "../logger/index.js";
+import sharp from "sharp";
 import TrackObjectFull = SpotifyApi.TrackObjectFull;
 import EpisodeObjectFull = SpotifyApi.EpisodeObjectFull;
 
@@ -69,6 +70,12 @@ export class SpotifyClient {
         } catch (e: any) {
             this.logger.error(`Error ${e.message} with reason ${e.response?.body?.error?.message}`);
         }
+    }
+
+    async getImage(url: string): Promise<Buffer> {
+        // The original image style from Shairport-sync was a png, the jpeg used by Spotify isn't working
+        const sharpStream = sharp({failOn: "none"}).png();
+        return (await got.stream(url).pipe(sharpStream)).toBuffer();
     }
 
     private async getSpotifyKey(): Promise<AccessToken> {
